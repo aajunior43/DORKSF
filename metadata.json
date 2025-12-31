@@ -1,0 +1,5 @@
+{
+  "name": "JRDorks AI",
+  "description": "Um gerador de Google Dorks impulsionado por IA para OSINT avançado e auditoria de segurança, usando Gemini para criar consultas de pesquisa precisas.",
+  "requestFramePermissions": []
+}
