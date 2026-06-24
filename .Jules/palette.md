@@ -1,0 +1,3 @@
+## 2024-06-25 - ARIA Labels for Brutalist UI
+**Learning:** The brutalist design heavily relies on simple, stark SVGs within buttons that lack visual labels to maintain the aesthetic. However, this creates a major accessibility issue as screen readers only see empty buttons. Adding aria-labels to these icon-only buttons (like Wipe, Copy, and Search) along with aria-hidden on the SVGs resolves this without breaking the visual style.
+**Action:** Always verify icon-only buttons have an aria-label, especially in brutalist or minimalistic interfaces where text labels are intentionally omitted.
