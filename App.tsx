@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header.tsx';
 import DorkCard from './components/DorkCard.tsx';
@@ -16,6 +15,7 @@ const LOADING_STEPS = [
 export default function App() {
   const [prompt, setPrompt] = useState('');
   const [loadingStep, setLoadingStep] = useState(0);
+  const [filterRisk, setFilterRisk] = useState<string>('All');
   const [state, setState] = useState<GenerationState>({
     loading: false,
     results: [],
@@ -38,6 +38,7 @@ export default function App() {
     e.preventDefault();
     if (!prompt.trim()) return;
     setState(prev => ({ ...prev, loading: true, error: null, results: [] }));
+    setFilterRisk('All');
     try {
       const dorks = await generateDorks(prompt);
       setState({ loading: false, results: dorks, error: null });
@@ -48,7 +49,32 @@ export default function App() {
 
   const handleClear = () => {
     setPrompt('');
+    setFilterRisk('All');
     setState({ loading: false, results: [], error: null });
+  };
+
+  const filteredResults = state.results.filter(dork =>
+    filterRisk === 'All' ? true : dork.riskLevel === filterRisk
+  );
+
+  const handleCopyAll = () => {
+    if (filteredResults.length === 0) return;
+    const textToCopy = filteredResults.map(d => `${d.query}\n// ${d.explanation}\n// Risk: ${d.riskLevel} | Category: ${d.category}`).join('\n\n');
+    navigator.clipboard.writeText(textToCopy);
+  };
+
+  const handleExportTxt = () => {
+    if (filteredResults.length === 0) return;
+    const textToExport = filteredResults.map(d => `${d.query}\n// ${d.explanation}\n// Risk: ${d.riskLevel} | Category: ${d.category}`).join('\n\n');
+    const blob = new Blob([textToExport], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `jrdorks_${new Date().getTime()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -56,7 +82,7 @@ export default function App() {
       <Header />
 
       <main className="flex-grow container mx-auto px-6 max-w-7xl relative z-10">
-        <div className="max-w-4xl mx-auto mt-20 mb-24">
+        <div className="max-w-4xl mx-auto mt-20 mb-12">
           <form onSubmit={handleSubmit} className="relative">
             <div className="flex flex-col md:flex-row gap-6">
               <input
@@ -65,6 +91,7 @@ export default function App() {
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="DIGITE O ALVO (ex: google.com)..."
                 className="brutal-input text-xl uppercase placeholder-black/50"
+                aria-label="Alvo para buscar dorks"
               />
               <div className="flex gap-4">
                 <button
@@ -72,6 +99,7 @@ export default function App() {
                   onClick={handleClear}
                   className="brutal-button px-8 py-4 aspect-square flex items-center justify-center hover:bg-red-500 hover:text-white"
                   title="WIPE"
+                  aria-label="Limpar campo de busca"
                 >
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
@@ -79,6 +107,7 @@ export default function App() {
                   type="submit"
                   disabled={state.loading}
                   className="brutal-button flex-grow md:flex-none px-12 py-4 text-2xl"
+                  aria-label="Executar busca de dorks"
                 >
                   {state.loading ? '...' : 'EXECUTAR'}
                 </button>
@@ -104,8 +133,46 @@ export default function App() {
           </div>
         )}
 
+        {!state.loading && state.results.length > 0 && (
+          <div className="mb-8 flex flex-col md:flex-row justify-between items-center bg-white border-4 border-black p-4 brutal-card">
+            <div className="flex items-center gap-4 mb-4 md:mb-0">
+              <label htmlFor="risk-filter" className="font-black uppercase text-sm">Filtrar por Risco:</label>
+              <select
+                id="risk-filter"
+                value={filterRisk}
+                onChange={(e) => setFilterRisk(e.target.value)}
+                className="border-2 border-black p-2 font-bold bg-gray-100"
+                aria-label="Filtrar dorks por nível de risco"
+              >
+                <option value="All">Todos (ALL)</option>
+                <option value="High">Alto (HIGH)</option>
+                <option value="Medium">Médio (MEDIUM)</option>
+                <option value="Low">Baixo (LOW)</option>
+              </select>
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={handleCopyAll}
+                className="brutal-button px-4 py-2 text-sm flex items-center gap-2 hover:bg-green-400"
+                aria-label="Copiar todos os dorks para área de transferência"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                COPIAR TODOS
+              </button>
+              <button
+                onClick={handleExportTxt}
+                className="brutal-button px-4 py-2 text-sm flex items-center gap-2 hover:bg-yellow-400"
+                aria-label="Exportar dorks para arquivo de texto"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                EXPORTAR TXT
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {!state.loading && state.results.map((dork, index) => (
+          {!state.loading && filteredResults.map((dork, index) => (
             <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
               <DorkCard dork={dork} />
             </div>
