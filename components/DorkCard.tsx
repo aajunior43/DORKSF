@@ -35,21 +35,23 @@ const DorkCard: React.FC<DorkCardProps> = ({ dork }) => {
         <div className="flex gap-4">
           <button 
             onClick={handleCopy}
-            className={`brutal-button w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white ${copied ? 'bg-green-400' : ''}`}
+            className={`brutal-button w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white focus-visible:ring-4 focus-visible:ring-black focus-visible:outline-none ${copied ? 'bg-green-400' : ''}`}
             title="COPIAR"
+            aria-label="Copy dork"
           >
             {copied ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg>
+              <svg aria-hidden="true" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg>
             ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+              <svg aria-hidden="true" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
             )}
           </button>
           <button 
             onClick={handleOpenInGoogle}
-            className="brutal-button w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white"
+            className="brutal-button w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white focus-visible:ring-4 focus-visible:ring-black focus-visible:outline-none"
             title="SEARCH"
+            aria-label="Search dork on Google"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+            <svg aria-hidden="true" className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
           </button>
         </div>
       </div>
