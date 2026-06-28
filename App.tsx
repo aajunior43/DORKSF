@@ -61,24 +61,26 @@ export default function App() {
             <div className="flex flex-col md:flex-row gap-6">
               <input
                 type="text"
+                aria-label="Target domain"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="DIGITE O ALVO (ex: google.com)..."
-                className="brutal-input text-xl uppercase placeholder-black/50"
+                className="brutal-input text-xl uppercase placeholder-black/50 focus-visible:ring-4 focus-visible:ring-black focus-visible:outline-none"
               />
               <div className="flex gap-4">
                 <button
                   type="button"
+                  aria-label="Clear target"
                   onClick={handleClear}
-                  className="brutal-button px-8 py-4 aspect-square flex items-center justify-center hover:bg-red-500 hover:text-white"
+                  className="brutal-button px-8 py-4 aspect-square flex items-center justify-center hover:bg-red-500 hover:text-white focus-visible:ring-4 focus-visible:ring-black focus-visible:outline-none"
                   title="WIPE"
                 >
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  <svg aria-hidden="true" className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
                 <button
                   type="submit"
                   disabled={state.loading}
-                  className="brutal-button flex-grow md:flex-none px-12 py-4 text-2xl"
+                  className="brutal-button flex-grow md:flex-none px-12 py-4 text-2xl focus-visible:ring-4 focus-visible:ring-black focus-visible:outline-none"
                 >
                   {state.loading ? '...' : 'EXECUTAR'}
                 </button>
