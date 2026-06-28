@@ -170,6 +170,13 @@
           <div id="ftChips" class="ft-chips"></div>
           <input id="b-ftcustom" class="binput" type="text" placeholder="outros, separados por vírgula (ex: rtf,xml)" autocomplete="off" style="margin-top:8px;">
         </div>
+        <div class="bfield bfield-wide">
+          <label>Grupos / Redes <code>site:t.me</code> · <code>site:chat.whatsapp.com</code></label>
+          <div id="grpChips" class="ft-chips">
+            <button type="button" class="ft-chip" data-grp="t.me">Telegram</button>
+            <button type="button" class="ft-chip" data-grp="chat.whatsapp.com">WhatsApp</button>
+          </div>
+        </div>
       </div>
 
       <label class="preview-label">Prévia do dork:</label>
@@ -241,10 +248,12 @@
     { c:"Sensitive Info", r:"High", t:'{{s}} intext:"password" filetype:log',                          e:"Logs contendo a palavra password." },
     { c:"Sensitive Info", r:"High", t:"{{s}} (ext:bak OR ext:old OR ext:backup)",                      e:"Arquivos de backup que podem conter dados sensíveis." },
     { c:"Login Pages", r:"Medium", t:"{{s}} (inurl:login OR inurl:admin OR inurl:signin)",            e:"Páginas de login/administração do alvo." },
-    { c:"Login Pages", r:"Medium", t:'{{s}} intitle:"admin login"',                                    e:"Painéis administrativos com título padrão." }
+    { c:"Login Pages", r:"Medium", t:'{{s}} intitle:"admin login"',                                    e:"Painéis administrativos com título padrão." },
+    { c:"Groups", r:"Low", t:"site:t.me {{qq}}",                                                        e:"Grupos e canais do Telegram que mencionam o termo." },
+    { c:"Groups", r:"Low", t:"site:chat.whatsapp.com {{qq}}",                                          e:"Convites de grupos do WhatsApp que mencionam o termo." }
   ];
 
-  var CATEGORIES = ["General","Configuration","Documents","Database","Sensitive Info","Login Pages"];
+  var CATEGORIES = ["General","Configuration","Documents","Database","Sensitive Info","Login Pages","Groups"];
   var RISKS = ["Low","Medium","High"];
 
   var $ = function(id){ return document.getElementById(id); };
@@ -266,6 +275,7 @@
   function buildQuery(tplStr, t){
     return tplStr
       .replace(/\{\{s\}\}/g, scopeFor(t))
+      .replace(/\{\{qq\}\}/g, '"' + (t.domain || t.raw) + '"')
       .replace(/\{\{q\}\}/g, t.raw)
       .replace(/\{\{d\}\}/g, t.domain || t.raw)
       .trim();
@@ -429,6 +439,7 @@
   // ===== Dork Builder =====
   var FILETYPES = ["pdf","doc","docx","xls","xlsx","csv","txt","ppt","sql","env","log","bak","xml","json"];
   var selectedFt = {};
+  var selectedGrp = {};
   var BFIELDS = ["b-exact","b-terms","b-site","b-intitle","b-inurl","b-intext","b-exclude","b-ftcustom"];
 
   function maybeQuote(v){ v = v.trim(); return /\s/.test(v) ? '"' + v + '"' : v; }
@@ -443,10 +454,19 @@
     return list;
   }
 
+  function getGroups(){
+    var list = [];
+    Object.keys(selectedGrp).forEach(function(g){ if(selectedGrp[g]) list.push(g); });
+    return list;
+  }
+
   function buildCustomQuery(){
     var parts = [];
     var site = $("b-site").value.trim();
     if(site){ site = site.replace(/^https?:\/\//i, "").replace(/\/.*$/, ""); parts.push("site:" + site); }
+    var grps = getGroups();
+    if(grps.length === 1){ parts.push("site:" + grps[0]); }
+    else if(grps.length > 1){ parts.push("(" + grps.map(function(g){ return "site:" + g; }).join(" OR ") + ")"); }
     var exact = $("b-exact").value.trim();
     if(exact){ parts.push('"' + exact + '"'); }
     var terms = $("b-terms").value.trim();
@@ -494,11 +514,20 @@
   function resetBuilder(){
     BFIELDS.forEach(function(id){ $(id).value = ""; });
     selectedFt = {};
+    selectedGrp = {};
     Array.prototype.forEach.call(document.querySelectorAll(".ft-chip"), function(b){ b.classList.remove("active"); });
     updatePreview();
   }
 
   buildFtChips();
+  Array.prototype.forEach.call(document.querySelectorAll("#grpChips .ft-chip"), function(b){
+    var g = b.getAttribute("data-grp");
+    b.addEventListener("click", function(){
+      selectedGrp[g] = !selectedGrp[g];
+      b.classList.toggle("active", !!selectedGrp[g]);
+      updatePreview();
+    });
+  });
   BFIELDS.forEach(function(id){ $(id).addEventListener("input", updatePreview); });
   $("b-copy").addEventListener("click", function(){ var q = buildCustomQuery(); if(q) copyText(q, this); });
   $("b-go").addEventListener("click", function(){
