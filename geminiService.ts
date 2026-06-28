@@ -6,9 +6,8 @@ import { DorkResult } from "./types.ts";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateDorks = async (userIntent: string): Promise<DorkResult[]> => {
-  // Alterado para gemini-3-flash-preview para melhor disponibilidade e latência
   const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
+    model: 'gemini-2.5-flash',
     contents: `Intenção de busca do usuário: "${userIntent}"
     
     Aja como um especialista em OSINT e Cibersegurança. Gere exatamente 5 Google Dorks altamente eficazes com base na intenção de busca do usuário. 
