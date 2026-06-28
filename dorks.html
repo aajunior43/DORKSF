@@ -83,6 +83,26 @@
   .empty .box{padding:48px;border:var(--bw) solid #000;margin-bottom:24px;}
   .empty svg{width:72px;height:72px;}
   .empty p{font-weight:800;font-size:1.2rem;letter-spacing:.4em;text-transform:uppercase;}
+  /* builder */
+  .builder{max-width:1000px;margin:32px auto 0;padding:24px;}
+  .builder-title{background:#000;color:var(--bg);display:inline-block;padding:6px 14px;font-weight:800;font-size:.8rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;}
+  .bgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  @media (max-width:640px){.bgrid{grid-template-columns:1fr;}}
+  .bfield{display:flex;flex-direction:column;gap:6px;}
+  .bfield-wide{grid-column:1 / -1;}
+  .bfield label{font-weight:800;font-size:.72rem;text-transform:uppercase;}
+  .bfield code{background:var(--pink);color:#000;padding:0 4px;border:1px solid #000;font-size:.72rem;}
+  .binput{border:3px solid #000;background:#fff;padding:10px 12px;font-family:inherit;font-weight:700;font-size:.85rem;outline:none;box-shadow:inset 3px 3px 0 0 #000;}
+  .binput:focus{background:#fffde9;}
+  .ft-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .ft-chip{border:3px solid #000;background:#fff;padding:5px 10px;font-weight:800;font-size:.7rem;text-transform:uppercase;cursor:pointer;box-shadow:3px 3px 0 #000;font-family:inherit;}
+  .ft-chip.active{background:#000;color:var(--bg);}
+  .ft-chip:active{transform:translate(2px,2px);box-shadow:0 0 0 #000;}
+  .preview-label{display:block;font-weight:800;font-size:.72rem;text-transform:uppercase;margin:22px 0 6px;}
+  .preview-box{background:#000;color:var(--cyan);padding:18px;border:3px solid #000;font-weight:700;font-size:.95rem;word-break:break-all;line-height:1.6;min-height:24px;box-shadow:4px 4px 0 rgba(0,0,0,.3);}
+  .preview-box.empty-preview{color:#666;}
+  .brow{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;}
+  .section-title{max-width:1000px;margin:40px auto 0;background:#000;color:var(--bg);display:block;width:fit-content;padding:6px 14px;font-weight:800;font-size:.8rem;letter-spacing:1px;text-transform:uppercase;}
   /* footer */
   footer{position:fixed;bottom:0;width:100%;background:#000;color:var(--bg);padding:8px 0;overflow:hidden;white-space:nowrap;z-index:50;}
   .marquee{display:inline-block;font-weight:800;font-size:.7rem;animation:marquee 22s linear infinite;}
@@ -113,6 +133,56 @@
       <b>[AVISO LEGAL]</b> Esta ferramenta gera operadores de busca (Google Dorks) apenas para fins educacionais e de auditoria de segurança <b>autorizada</b>. Use somente em alvos que você possui ou tem permissão explícita para testar. O uso indevido pode ser ilegal e é de sua inteira responsabilidade.
     </div>
 
+    <!-- ===== DORK BUILDER ===== -->
+    <section class="builder card">
+      <div class="builder-title">[ DORK BUILDER ] — monte seu dork com os operadores</div>
+      <div class="bgrid">
+        <div class="bfield">
+          <label for="b-exact">Texto exato <code>"..."</code></label>
+          <input id="b-exact" class="binput" type="text" placeholder="ex: dados confidenciais" autocomplete="off">
+        </div>
+        <div class="bfield">
+          <label for="b-terms">Termos (qualquer)</label>
+          <input id="b-terms" class="binput" type="text" placeholder="ex: relatorio 2024" autocomplete="off">
+        </div>
+        <div class="bfield">
+          <label for="b-site">Site específico <code>site:</code></label>
+          <input id="b-site" class="binput" type="text" placeholder="ex: gov.br" autocomplete="off">
+        </div>
+        <div class="bfield">
+          <label for="b-intitle">No título <code>intitle:</code></label>
+          <input id="b-intitle" class="binput" type="text" placeholder="ex: index of" autocomplete="off">
+        </div>
+        <div class="bfield">
+          <label for="b-inurl">Na URL <code>inurl:</code></label>
+          <input id="b-inurl" class="binput" type="text" placeholder="ex: admin" autocomplete="off">
+        </div>
+        <div class="bfield">
+          <label for="b-intext">No texto <code>intext:</code></label>
+          <input id="b-intext" class="binput" type="text" placeholder="ex: password" autocomplete="off">
+        </div>
+        <div class="bfield">
+          <label for="b-exclude">Excluir termos <code>-</code></label>
+          <input id="b-exclude" class="binput" type="text" placeholder="ex: login -spam (separe por espaço)" autocomplete="off">
+        </div>
+        <div class="bfield bfield-wide">
+          <label>Tipos de arquivo <code>filetype:</code></label>
+          <div id="ftChips" class="ft-chips"></div>
+          <input id="b-ftcustom" class="binput" type="text" placeholder="outros, separados por vírgula (ex: rtf,xml)" autocomplete="off" style="margin-top:8px;">
+        </div>
+      </div>
+
+      <label class="preview-label">Prévia do dork:</label>
+      <div id="preview" class="preview-box">(monte seu dork acima)</div>
+      <div class="brow">
+        <button type="button" id="b-copy" class="btn" style="padding:10px 18px;">COPIAR</button>
+        <button type="button" id="b-go" class="btn" style="padding:10px 18px;">ABRIR NO GOOGLE</button>
+        <button type="button" id="b-add" class="btn" style="padding:10px 18px;">ADICIONAR AOS RESULTADOS</button>
+        <button type="button" id="b-reset" class="btn" style="padding:10px 18px;">LIMPAR</button>
+      </div>
+    </section>
+
+    <div class="section-title">[ GERADOR AUTOMÁTICO ] — gera vários dorks a partir de um alvo</div>
     <form id="form">
       <div class="row">
         <input id="target" class="input grow" type="text" placeholder="DIGITE O ALVO (ex: google.com ou palavra-chave)..." autocomplete="off" />
@@ -355,6 +425,96 @@
     document.body.appendChild(a); a.click();
     document.body.removeChild(a); URL.revokeObjectURL(url);
   });
+
+  // ===== Dork Builder =====
+  var FILETYPES = ["pdf","doc","docx","xls","xlsx","csv","txt","ppt","sql","env","log","bak","xml","json"];
+  var selectedFt = {};
+  var BFIELDS = ["b-exact","b-terms","b-site","b-intitle","b-inurl","b-intext","b-exclude","b-ftcustom"];
+
+  function maybeQuote(v){ v = v.trim(); return /\s/.test(v) ? '"' + v + '"' : v; }
+
+  function getFiletypes(){
+    var list = [];
+    FILETYPES.forEach(function(ft){ if(selectedFt[ft]) list.push(ft); });
+    ($("b-ftcustom").value || "").split(/[,\s]+/).forEach(function(c){
+      c = c.trim().replace(/^\./, "").toLowerCase();
+      if(c && list.indexOf(c) === -1) list.push(c);
+    });
+    return list;
+  }
+
+  function buildCustomQuery(){
+    var parts = [];
+    var site = $("b-site").value.trim();
+    if(site){ site = site.replace(/^https?:\/\//i, "").replace(/\/.*$/, ""); parts.push("site:" + site); }
+    var exact = $("b-exact").value.trim();
+    if(exact){ parts.push('"' + exact + '"'); }
+    var terms = $("b-terms").value.trim();
+    if(terms){ parts.push(terms); }
+    var intitle = $("b-intitle").value.trim();
+    if(intitle){ parts.push("intitle:" + maybeQuote(intitle)); }
+    var inurl = $("b-inurl").value.trim();
+    if(inurl){ parts.push("inurl:" + maybeQuote(inurl)); }
+    var intext = $("b-intext").value.trim();
+    if(intext){ parts.push("intext:" + maybeQuote(intext)); }
+    var fts = getFiletypes();
+    if(fts.length === 1){ parts.push("filetype:" + fts[0]); }
+    else if(fts.length > 1){ parts.push("(" + fts.map(function(f){ return "filetype:" + f; }).join(" OR ") + ")"); }
+    var exclude = $("b-exclude").value.trim();
+    if(exclude){
+      exclude.split(/\s+/).forEach(function(tok){
+        tok = tok.replace(/^-+/, "").trim();
+        if(tok) parts.push("-" + maybeQuote(tok));
+      });
+    }
+    return parts.join(" ");
+  }
+
+  function updatePreview(){
+    var q = buildCustomQuery();
+    var box = $("preview");
+    if(q){ box.textContent = q; box.classList.remove("empty-preview"); }
+    else { box.textContent = "(monte seu dork acima)"; box.classList.add("empty-preview"); }
+  }
+
+  function buildFtChips(){
+    var wrap = $("ftChips");
+    FILETYPES.forEach(function(ft){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "ft-chip"; b.textContent = ft;
+      b.addEventListener("click", function(){
+        selectedFt[ft] = !selectedFt[ft];
+        b.classList.toggle("active", !!selectedFt[ft]);
+        updatePreview();
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  function resetBuilder(){
+    BFIELDS.forEach(function(id){ $(id).value = ""; });
+    selectedFt = {};
+    Array.prototype.forEach.call(document.querySelectorAll(".ft-chip"), function(b){ b.classList.remove("active"); });
+    updatePreview();
+  }
+
+  buildFtChips();
+  BFIELDS.forEach(function(id){ $(id).addEventListener("input", updatePreview); });
+  $("b-copy").addEventListener("click", function(){ var q = buildCustomQuery(); if(q) copyText(q, this); });
+  $("b-go").addEventListener("click", function(){
+    var q = buildCustomQuery();
+    if(q) window.open("https://www.google.com/search?q=" + encodeURIComponent(q), "_blank", "noopener");
+  });
+  $("b-add").addEventListener("click", function(){
+    var q = buildCustomQuery();
+    if(!q) return;
+    state.dorks.unshift({ query:q, category:"Custom", riskLevel:"Manual", explanation:"Dork montado manualmente no Dork Builder." });
+    state.cat = "ALL"; state.risk = "ALL";
+    buildChips(); render();
+    $("results").scrollIntoView({ behavior:"smooth" });
+  });
+  $("b-reset").addEventListener("click", resetBuilder);
+  updatePreview();
 
   render();
 })();
