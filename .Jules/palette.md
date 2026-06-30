@@ -1,0 +1,3 @@
+## 2025-03-09 - Accessible Focus States in Brutalist Design
+**Learning:** Brutalist design styles often reset default browser outlines (e.g. `outline: none` or inset box-shadows on buttons/inputs), which completely breaks keyboard accessibility for users relying on tab navigation.
+**Action:** When implementing brutalist UI components, always proactively restore keyboard focus indicators using Tailwind's `focus-visible:ring-*` and `focus-visible:outline-none` utilities so that interactive elements remain clearly navigable for keyboard users.

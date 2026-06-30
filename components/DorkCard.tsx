@@ -35,8 +35,9 @@ const DorkCard: React.FC<DorkCardProps> = ({ dork }) => {
         <div className="flex gap-4">
           <button 
             onClick={handleCopy}
-            className={`brutal-button w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white ${copied ? 'bg-green-400' : ''}`}
+            className={`brutal-button w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white focus-visible:ring-4 focus-visible:ring-black focus-visible:outline-none ${copied ? 'bg-green-400' : ''}`}
             title="COPIAR"
+            aria-label="Copy"
           >
             {copied ? (
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" /></svg>
@@ -46,8 +47,9 @@ const DorkCard: React.FC<DorkCardProps> = ({ dork }) => {
           </button>
           <button 
             onClick={handleOpenInGoogle}
-            className="brutal-button w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white"
+            className="brutal-button w-12 h-12 flex items-center justify-center hover:bg-black hover:text-white focus-visible:ring-4 focus-visible:ring-black focus-visible:outline-none"
             title="SEARCH"
+            aria-label="Search"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
           </button>
